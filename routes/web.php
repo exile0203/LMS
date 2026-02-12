@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\GroupChatController;
+
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,6 +22,12 @@ Route::get('dashboard', function () {
 
 Route::prefix('mail')->name('mail.')->group(function(){
     Route::get('/', [MailController::class, 'index'])->name('index');
+});
+Route::prefix('groupchat')->name('groupchat.')->group(function(){
+    Route::get('/', [GroupChatController::class, 'index'])->name('index');
+});
+Route::prefix('quiz')->name('quiz.')->group(function(){
+    Route::get('/', [QuizController::class, 'index'])->name('index');
 });
 
 
