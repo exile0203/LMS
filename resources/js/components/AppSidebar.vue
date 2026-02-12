@@ -28,6 +28,16 @@ const mainNavItems: NavItem[] = [
         href: '/mail',
         icon: LayoutGrid,
     }, 
+    {
+        title: 'Quizzes',
+        href: '/quiz',
+        icon: LayoutGrid,
+    }, 
+    {
+        title: 'Group Chat',
+        href: '/groupchat',
+        icon: LayoutGrid,
+    }, 
 ];
 
 const footerNavItems: NavItem[] = [
