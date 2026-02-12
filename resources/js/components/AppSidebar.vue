@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     }, 
+    {
+        title: 'Mail',
+        href: '/mail',
+        icon: LayoutGrid,
+    }, 
 ];
 
 const footerNavItems: NavItem[] = [
