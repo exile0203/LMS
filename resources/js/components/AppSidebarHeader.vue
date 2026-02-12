@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { Head, usePage } from '@inertiajs/vue3';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import type { BreadcrumbItem } from '@/types';
+import type { AppPageProps, BreadcrumbItem } from '@/types';
 import { 
     Search, Bell, MessageSquare, Maximize, Minimize, 
-    User, Settings, X, Send, CheckCircle2 
+    Settings, X, Send, CheckCircle2 
 } from 'lucide-vue-next';
 
 // 1. Updated Breadcrumbs
@@ -26,6 +26,46 @@ const props = withDefaults(
 const isChatOpen = ref(false);
 const isNotificationsOpen = ref(false);
 const isFullscreen = ref(false);
+const page = usePage<AppPageProps>();
+
+const currentUser = computed(() => page.props.auth?.user);
+const currentUserName = computed(() =>
+    typeof currentUser.value?.name === 'string' && currentUser.value.name.trim().length > 0
+        ? currentUser.value.name
+        : 'User',
+);
+const currentUserRole = computed(() => {
+    const possibleRole =
+        currentUser.value?.role ??
+        currentUser.value?.user_type ??
+        currentUser.value?.type;
+
+    if (typeof possibleRole === 'string' && possibleRole.trim().length > 0) {
+        return possibleRole.toLowerCase();
+    }
+
+    return 'student';
+});
+const isTeacher = computed(() => currentUserRole.value === 'teacher');
+const roleLabel = computed(() => (isTeacher.value ? 'Teacher View' : 'Student View'));
+const roleBadgeClass = computed(() =>
+    isTeacher.value
+        ? 'bg-emerald-100 text-emerald-700'
+        : 'bg-amber-100 text-amber-700',
+);
+const avatarClass = computed(() =>
+    isTeacher.value
+        ? 'bg-emerald-700'
+        : 'bg-amber-600',
+);
+const currentUserInitials = computed(() =>
+    currentUserName.value
+        .split(/\s+/)
+        .map((part) => part[0] ?? '')
+        .join('')
+        .slice(0, 2)
+        .toUpperCase(),
+);
 
 // --- Fullscreen Logic ---
 const toggleFullscreen = () => {
@@ -40,8 +80,18 @@ const toggleFullscreen = () => {
 
 const syncFullscreen = () => isFullscreen.value = !!document.fullscreenElement;
 
-onMounted(() => document.addEventListener('fullscreenchange', syncFullscreen));
+onMounted(() => {
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    console.info(
+        `[AppSidebarHeader] Active as ${roleLabel.value} for ${currentUserName.value} (${currentUserRole.value})`,
+    );
+});
 onUnmounted(() => document.removeEventListener('fullscreenchange', syncFullscreen));
+watch(currentUserRole, (newRole, oldRole) => {
+    if (newRole !== oldRole) {
+        console.info(`[AppSidebarHeader] Role changed from ${oldRole} to ${newRole}`);
+    }
+});
 
 // Mock Data
 const notifications = [
@@ -120,11 +170,20 @@ const notifications = [
 
             <div class="flex items-center space-x-3 cursor-pointer group">
                 <div class="text-right hidden sm:block">
-                    <p class="text-sm font-semibold text-gray-900 leading-tight">John Doe</p>
-                    <p class="text-[11px] text-gray-500">Administrator</p>
+                    <p class="text-sm font-semibold text-gray-900 leading-tight">{{ currentUserName }}</p>
+                    <p class="text-[11px] text-gray-500">{{ roleLabel }}</p>
                 </div>
-                <div class="w-9 h-9 bg-gray-800 text-white rounded-full flex items-center justify-center font-bold text-sm border-2 border-white shadow-sm">
-                    JD
+                <span
+                    class="hidden rounded-full px-2 py-1 text-[10px] font-semibold md:inline-flex"
+                    :class="roleBadgeClass"
+                >
+                    {{ roleLabel }}
+                </span>
+                <div
+                    class="w-9 h-9 text-white rounded-full flex items-center justify-center font-bold text-sm border-2 border-white shadow-sm"
+                    :class="avatarClass"
+                >
+                    {{ currentUserInitials }}
                 </div>
                 <button class="p-1 text-gray-400 group-hover:text-blue-600 transition-colors">
                     <Settings class="w-5 h-5" />
