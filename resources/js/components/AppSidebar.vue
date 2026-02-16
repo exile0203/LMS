@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, Folder, Inbox, LayoutGrid, MessageCircle } from 'lucide-vue-next';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -26,17 +26,17 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Mail',
         href: '/mail',
-        icon: LayoutGrid,
+        icon: Inbox,
     }, 
     {
         title: 'Quizzes',
         href: '/quiz',
-        icon: LayoutGrid,
+        icon: BookOpen,
     }, 
     {
         title: 'Group Chat',
         href: '/groupchat',
-        icon: LayoutGrid,
+        icon: MessageCircle,
     }, 
 ];
 
@@ -55,11 +55,11 @@ const footerNavItems: NavItem[] = [
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="icon" variant="inset" class="animate-fade-in-up border-r border-sidebar-border/70 bg-sidebar/85 backdrop-blur-md">
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
+                    <SidebarMenuButton size="lg" as-child class="rounded-xl border border-sidebar-border/60 bg-sidebar-accent/40 hover:bg-sidebar-accent">
                         <Link :href="dashboard()">
                             <AppLogo />
                         </Link>
@@ -68,11 +68,11 @@ const footerNavItems: NavItem[] = [
             </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent class="stagger-children">
             <NavMain :items="mainNavItems" />
         </SidebarContent>
 
-        <SidebarFooter>
+        <SidebarFooter class="border-t border-sidebar-border/70 pt-3">
             <NavFooter :items="footerNavItems" />
             <NavUser />
         </SidebarFooter>

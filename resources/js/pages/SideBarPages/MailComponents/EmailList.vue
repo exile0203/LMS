@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Square, Star, Archive, Trash2, MailOpen, Clock } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
 
 interface Email {
     id: number;
@@ -14,6 +15,8 @@ interface Email {
 
 defineProps<{
     emails: Email[];
+    hasMoreEmails: boolean;
+    isLoadingMoreEmails: boolean;
 }>()
 
 const emit = defineEmits<{
@@ -21,77 +24,99 @@ const emit = defineEmits<{
     'delete-email': [emailId: number]
     'archive-email': [emailId: number]
     'mark-as-read': [emailId: number]
+    'snooze-email': [emailId: number]
+    'load-more-emails': []
 }>()
 </script>
 
 <template>
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto bg-gradient-to-b from-background/40 to-background">
         <div
             v-for="email in emails"
             :key="email.id"
-            class="group flex items-center px-4 py-2 border-b border-gray-100 bg-white hover:shadow-md hover:z-10 cursor-pointer relative"
-            :class="{ 'font-bold bg-blue-50/30': email.unread }"
+            class="group relative mx-3 my-2 grid cursor-pointer grid-cols-[auto_1fr_auto] gap-3 rounded-xl border border-border/70 bg-card/85 px-3 py-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card md:grid-cols-[auto_180px_1fr_auto]"
+            :class="email.unread ? 'border-primary/40 ring-1 ring-primary/20' : ''"
         >
-            <div class="flex items-center gap-3 mr-4 shrink-0">
-                <Square class="w-4 h-4 text-gray-300 group-hover:text-gray-400" />
-                <button
-                    class="p-0 hover:scale-110 transition-transform"
-                    @click.stop="$emit('toggle-star', email.id)"
+            <div class="flex shrink-0 items-center gap-2">
+                <Square class="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+                <span v-if="email.unread" class="h-2.5 w-2.5 rounded-full bg-primary"></span>
+                <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    @click.stop="emit('toggle-star', email.id)"
                 >
                     <Star
-                        class="w-4 h-4"
-                        :class="email.starred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'"
+                        class="h-4 w-4"
+                        :class="email.starred ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'"
                     />
-                </button>
+                </Button>
             </div>
 
-            <div class="w-48 text-sm truncate mr-4">
+            <div class="truncate text-sm font-medium text-foreground">
                 {{ email.sender }}
             </div>
 
-            <div class="flex-1 text-sm truncate flex gap-2">
-                <span class="text-gray-900">{{ email.subject }}</span>
-                <span class="text-gray-400 font-normal">- {{ email.snippet }}</span>
+            <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-foreground">{{ email.subject }}</p>
+                <p class="truncate text-xs text-muted-foreground">{{ email.snippet }}</p>
             </div>
 
-            <div class="w-20 text-right text-xs text-gray-500 group-hover:hidden">
-                {{ email.time }}
-            </div>
+            <div class="flex items-center gap-2 justify-self-end">
+                <div class="hidden text-right text-[11px] text-muted-foreground md:block">
+                    {{ email.time }}
+                </div>
 
-            <div class="hidden group-hover:flex items-center gap-2 bg-white pl-4 ml-auto">
-                <button 
-                    class="p-2 hover:bg-gray-100 rounded-full transition-colors" 
-                    title="Archive"
-                    @click.stop="$emit('archive-email', email.id)"
-                >
-                    <Archive class="w-4 h-4" />
-                </button>
-                <button 
-                    class="p-2 hover:bg-gray-100 rounded-full transition-colors" 
-                    title="Delete"
-                    @click.stop="$emit('delete-email', email.id)"
-                >
-                    <Trash2 class="w-4 h-4" />
-                </button>
-                <button 
-                    class="p-2 hover:bg-gray-100 rounded-full transition-colors" 
-                    title="Mark as read"
-                    @click.stop="$emit('mark-as-read', email.id)"
-                >
-                    <MailOpen class="w-4 h-4" />
-                </button>
-                <button 
-                    class="p-2 hover:bg-gray-100 rounded-full transition-colors" 
-                    title="Snooze"
-                    @click.stop
-                >
-                    <Clock class="w-4 h-4" />
-                </button>
+                <div class="flex items-center gap-1 opacity-100 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Archive"
+                        @click.stop="emit('archive-email', email.id)"
+                    >
+                        <Archive class="h-4 w-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Delete"
+                        @click.stop="emit('delete-email', email.id)"
+                    >
+                        <Trash2 class="h-4 w-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Mark as read"
+                        @click.stop="emit('mark-as-read', email.id)"
+                    >
+                        <MailOpen class="h-4 w-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title="Snooze"
+                        @click.stop="emit('snooze-email', email.id)"
+                    >
+                        <Clock class="h-4 w-4" />
+                    </Button>
+                </div>
             </div>
         </div>
 
-        <div v-if="emails.length === 0" class="flex items-center justify-center h-full text-gray-500">
-            <p class="text-lg">No emails in this folder</p>
+        <div v-if="emails.length === 0" class="mx-3 my-6 flex min-h-64 items-center justify-center rounded-xl border border-dashed border-border bg-card/60 text-muted-foreground">
+            <p class="text-sm">No emails in this folder yet.</p>
+        </div>
+
+        <div v-if="hasMoreEmails && emails.length > 0" class="flex justify-center p-4">
+            <Button
+                type="button"
+                variant="outline"
+                class="min-w-36 rounded-full"
+                :disabled="isLoadingMoreEmails"
+                @click="emit('load-more-emails')"
+            >
+                {{ isLoadingMoreEmails ? 'Loading...' : 'Load more emails' }}
+            </Button>
         </div>
     </div>
 </template>

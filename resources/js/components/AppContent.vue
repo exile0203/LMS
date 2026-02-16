@@ -12,7 +12,7 @@ const className = computed(() => props.class);
 </script>
 
 <template>
-    <SidebarInset v-if="props.variant === 'sidebar'" :class="className">
+    <SidebarInset v-if="props.variant === 'sidebar'" :class="['min-h-svh bg-transparent', className]">
         <slot />
     </SidebarInset>
     <main

@@ -4,6 +4,8 @@ namespace Tests\Feature\Settings;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
@@ -52,6 +54,7 @@ class ProfileUpdateTest extends TestCase
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
                 'email' => $user->email,
+                'student_id_no' => $user->student_id_no,
             ]);
 
         $response
@@ -59,6 +62,50 @@ class ProfileUpdateTest extends TestCase
             ->assertRedirect(route('profile.edit'));
 
         $this->assertNotNull($user->refresh()->email_verified_at);
+    }
+
+    public function test_profile_avatar_can_be_uploaded(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('profile.update'), [
+                'name' => 'Test User',
+                'email' => $user->email,
+                'avatar' => UploadedFile::fake()->image('avatar.jpg'),
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('profile.edit'));
+
+        $user->refresh();
+        $this->assertNotNull($user->avatar_path);
+        Storage::disk('public')->assertExists((string) $user->avatar_path);
+    }
+
+    public function test_student_id_number_cannot_be_changed_from_profile_update(): void
+    {
+        $user = User::factory()->create([
+            'student_id_no' => '2026311342',
+            'role' => 'student',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('profile.update'), [
+                'name' => 'Test User',
+                'email' => $user->email,
+                'student_id_no' => '9999999999',
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('profile.edit'));
+
+        $this->assertSame('2026311342', $user->refresh()->student_id_no);
     }
 
     public function test_user_can_delete_their_account()
