@@ -19,6 +19,18 @@ const { getInitials } = useInitials();
 const showAvatar = computed(
     () => props.user.avatar && props.user.avatar !== '',
 );
+
+const secondaryLine = computed(() => {
+    if (props.user.student_id_no) {
+        return `ID: ${props.user.student_id_no}`;
+    }
+
+    if (props.showEmail) {
+        return props.user.email;
+    }
+
+    return '';
+});
 </script>
 
 <template>
@@ -31,8 +43,6 @@ const showAvatar = computed(
 
     <div class="grid flex-1 text-left text-sm leading-tight">
         <span class="truncate font-medium">{{ user.name }}</span>
-        <span v-if="showEmail" class="truncate text-xs text-muted-foreground">{{
-            user.email
-        }}</span>
+        <span v-if="secondaryLine" class="truncate text-xs text-muted-foreground">{{ secondaryLine }}</span>
     </div>
 </template>

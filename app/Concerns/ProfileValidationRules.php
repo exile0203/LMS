@@ -17,6 +17,8 @@ trait ProfileValidationRules
         return [
             'name' => $this->nameRules(),
             'email' => $this->emailRules($userId),
+            'student_id_no' => $this->studentIdRules($userId),
+            'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 
@@ -45,6 +47,23 @@ trait ProfileValidationRules
             $userId === null
                 ? Rule::unique(User::class)
                 : Rule::unique(User::class)->ignore($userId),
+        ];
+    }
+
+    /**
+     * Get the validation rules used to validate student ID numbers.
+     *
+     * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
+     */
+    protected function studentIdRules(?int $userId = null): array
+    {
+        return [
+            'nullable',
+            'string',
+            'max:64',
+            $userId === null
+                ? Rule::unique(User::class, 'student_id_no')
+                : Rule::unique(User::class, 'student_id_no')->ignore($userId),
         ];
     }
 }

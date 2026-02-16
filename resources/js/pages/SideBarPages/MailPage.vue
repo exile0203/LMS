@@ -1,104 +1,158 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { 
-    Inbox, Star, Clock, Send, File, Trash2, Tag 
-} from 'lucide-vue-next';
-import MailSidebar from './MailComponents/MailSidebar.vue';
-import EmailToolbar from './MailComponents/EmailToolbar.vue';
 import EmailList from './MailComponents/EmailList.vue';
+import EmailToolbar from './MailComponents/EmailToolbar.vue';
+import MailSidebar from './MailComponents/MailSidebar.vue';
+import { useMailPage, type MailPageProps } from './MailModules/composables/useMailPage';
 
-// Mock Email Data
-const allEmails = ref([
-    { id: 1, sender: 'Google Security', subject: 'Security alert for your account', snippet: 'A new sign-in was detected on a Linux device...', time: '10:24 AM', unread: true, starred: false, folder: 'Inbox' },
-    { id: 2, sender: 'GitHub', subject: '[GitHub] A personal access token has expired', snippet: 'Hi there, your token "Dev-Access" expired today...', time: '9:15 AM', unread: false, starred: true, folder: 'Inbox' },
-    { id: 3, sender: 'Dribbble', subject: 'Top design shots this week', snippet: 'Check out the most popular shots from the community...', time: 'Yesterday', unread: true, starred: false, folder: 'Inbox' },
-    { id: 4, sender: 'Figma', subject: 'New comment in "Dashboard Design"', snippet: 'Sarah left a comment: "Can we change the blue to..."', time: 'Feb 10', unread: false, starred: false, folder: 'Inbox' },
-]);
-
-const currentFolder = ref('Inbox');
-
-const folders = ref([
-    { name: 'Inbox', icon: Inbox, count: 4, active: true },
-    { name: 'Starred', icon: Star, count: 1, active: false },
-    { name: 'Snoozed', icon: Clock, count: 0, active: false },
-    { name: 'Sent', icon: Send, count: 0, active: false },
-    { name: 'Drafts', icon: File, count: 2, active: false },
-    { name: 'Spam', icon: Tag, count: 0, active: false },
-    { name: 'Trash', icon: Trash2, count: 0, active: false },
-]);
-
-// Get emails for current folder
-const currentEmails = computed(() => {
-    if (currentFolder.value === 'Starred') {
-        return allEmails.value.filter(email => email.starred);
-    }
-    if (currentFolder.value === 'Trash') {
-        return allEmails.value.filter(email => email.folder === 'Trash');
-    }
-    if (currentFolder.value === 'Inbox') {
-        return allEmails.value.filter(email => email.folder === 'Inbox');
-    }
-    return []; // Empty for Sent, Drafts, Spam, Snoozed
+const props = withDefaults(defineProps<MailPageProps>(), {
+    emails: () => [],
+    pagination: () => ({
+        currentPage: 1,
+        hasMorePages: false,
+        nextPage: null,
+    }),
 });
 
-// Update active folder styling
-const activeFolders = computed(() => {
-    return folders.value.map(folder => ({
-        ...folder,
-        active: folder.name === currentFolder.value,
-        count: folder.name === 'Starred' ? allEmails.value.filter(e => e.starred).length : folder.count,
-    }));
-});
+const {
+    currentFolder,
+    currentEmails,
+    activeFolders,
+    isComposing,
+    composeForm,
+    flashSuccess,
+    flashError,
+    selectFolder,
+    toggleStar,
+    deleteEmail,
+    archiveEmail,
+    markAsRead,
+    snoozeEmail,
+    sendMail,
+    hasMoreEmails,
+    isLoadingMoreEmails,
+    loadMoreEmails,
+} = useMailPage(props);
 
-const selectFolder = (folderName: string) => {
-    currentFolder.value = folderName;
-};
-
-const toggleStar = (emailId: number) => {
-    const email = allEmails.value.find(e => e.id === emailId);
-    if (email) {
-        email.starred = !email.starred;
-    }
-};
-
-const deleteEmail = (emailId: number) => {
-    const email = allEmails.value.find(e => e.id === emailId);
-    if (email) {
-        email.folder = 'Trash';
-    }
-};
-
-const archiveEmail = (emailId: number) => {
-    allEmails.value = allEmails.value.filter(e => e.id !== emailId);
-};
-
-const markAsRead = (emailId: number) => {
-    const email = allEmails.value.find(e => e.id === emailId);
-    if (email) {
-        email.unread = false;
-    }
-};
+const currentFolderCount = computed(() =>
+    activeFolders.value.find((folder) => folder.name === currentFolder.value)?.count ?? 0,
+);
+const totalFolderCount = computed(() =>
+    activeFolders.value
+        .filter((folder) => folder.name !== 'Starred')
+        .reduce((sum, folder) => sum + folder.count, 0),
+);
 </script>
 
 <template>
     <Head :title="`${currentFolder} - Mail`" />
 
     <AppLayout>
-        <div class="flex h-[calc(100vh-64px)] bg-white overflow-hidden">
-            <MailSidebar :folders="activeFolders" @select-folder="selectFolder" />
+        <div class="space-y-3 px-3 py-3 md:px-6">
+            <div class="surface-panel animate-fade-in-up border-primary/15 bg-gradient-to-r from-card via-card to-primary/5 px-4 py-4">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.18em] text-muted-foreground">Campus Mail</p>
+                        <h1 class="mt-1 text-xl font-bold text-foreground md:text-2xl">{{ currentFolder }}</h1>
+                        <p class="mt-1 text-sm text-muted-foreground">Quickly process messages with folder actions and keyboard-friendly controls.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <Badge variant="secondary" class="rounded-full px-3 py-1">
+                            {{ currentFolderCount }} in folder
+                        </Badge>
+                        <Badge variant="outline" class="rounded-full px-3 py-1">
+                            {{ totalFolderCount }} total
+                        </Badge>
+                    </div>
+                </div>
+            </div>
 
-            <main class="flex-1 flex flex-col bg-gray-50/30">
-                <EmailToolbar />
-                <EmailList 
-                    :emails="currentEmails" 
-                    @toggle-star="toggleStar"
-                    @delete-email="deleteEmail"
-                    @archive-email="archiveEmail"
-                    @mark-as-read="markAsRead"
+            <Alert v-if="flashSuccess" class="border-emerald-200 bg-emerald-50 text-emerald-700">
+                <AlertDescription>{{ flashSuccess }}</AlertDescription>
+            </Alert>
+            <Alert v-if="flashError" variant="destructive">
+                <AlertDescription>{{ flashError }}</AlertDescription>
+            </Alert>
+
+            <div class="surface-panel animate-fade-in-up flex h-[calc(100vh-220px)] min-h-[34rem] flex-col overflow-hidden md:h-[calc(100vh-210px)] md:flex-row">
+                <MailSidebar
+                    :folders="activeFolders"
+                    @select-folder="selectFolder"
+                    @compose="isComposing = true"
                 />
-            </main>
+
+                <main class="flex flex-1 flex-col bg-background/70">
+                    <EmailToolbar
+                        :current-folder="currentFolder"
+                        :visible-count="currentEmails.length"
+                        :total-count="totalFolderCount"
+                    />
+                    <EmailList
+                        :emails="currentEmails"
+                        :has-more-emails="hasMoreEmails"
+                        :is-loading-more-emails="isLoadingMoreEmails"
+                        @toggle-star="toggleStar"
+                        @delete-email="deleteEmail"
+                        @archive-email="archiveEmail"
+                        @mark-as-read="markAsRead"
+                        @snooze-email="snoozeEmail"
+                        @load-more-emails="loadMoreEmails"
+                    />
+                </main>
+            </div>
         </div>
+
+        <Dialog v-model:open="isComposing">
+            <DialogContent class="sm:max-w-lg">
+                <DialogHeader>
+                    <DialogTitle>Compose Email</DialogTitle>
+                    <DialogDescription>Write and send an email to another user.</DialogDescription>
+                </DialogHeader>
+
+                <div class="space-y-3">
+                    <div>
+                        <Label class="mb-1 block text-xs uppercase tracking-wide">To</Label>
+                        <Input v-model="composeForm.to" type="email" placeholder="Recipient email" />
+                    </div>
+                    <div>
+                        <Label class="mb-1 block text-xs uppercase tracking-wide">Subject</Label>
+                        <Input v-model="composeForm.subject" type="text" placeholder="Subject" />
+                    </div>
+                    <div>
+                        <Label class="mb-1 block text-xs uppercase tracking-wide">Message</Label>
+                        <textarea
+                            v-model="composeForm.body"
+                            rows="6"
+                            placeholder="Message"
+                            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        />
+                    </div>
+                </div>
+
+                <DialogFooter class="gap-2">
+                    <Button type="button" variant="outline" @click="isComposing = false">
+                        Cancel
+                    </Button>
+                    <Button type="button" @click="sendMail">
+                        Send
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </AppLayout>
 </template>

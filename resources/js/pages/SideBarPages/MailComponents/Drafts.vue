@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import AppLayout from '@/layouts/AppLayout.vue';
 import { 
     Inbox, Star, Clock, Send, File, Trash2, Tag 
 } from 'lucide-vue-next';
-import MailSidebar from './MailSidebar.vue';
-import EmailToolbar from './EmailToolbar.vue';
+import { ref } from 'vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 import EmailList from './EmailList.vue';
+import EmailToolbar from './EmailToolbar.vue';
+import MailSidebar from './MailSidebar.vue';
 
 // Empty emails for Drafts
 const emails = ref([]);
@@ -27,10 +27,10 @@ const folders = [
     <Head title="Drafts - Mail" />
 
     <AppLayout>
-        <div class="flex h-[calc(100vh-64px)] bg-white overflow-hidden">
+        <div class="flex h-[calc(100vh-64px)] bg-background overflow-hidden">
             <MailSidebar :folders="folders" />
 
-            <main class="flex-1 flex flex-col bg-gray-50/30">
+            <main class="flex-1 flex flex-col bg-background">
                 <EmailToolbar />
                 <EmailList :emails="emails" />
             </main>

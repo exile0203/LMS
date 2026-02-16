@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Form, Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/DeleteUser.vue';
 import Heading from '@/components/Heading.vue';
@@ -28,7 +29,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ];
 
 const page = usePage();
-const user = page.props.auth.user;
+const user = computed(() => page.props.auth.user);
 </script>
 
 <template>
@@ -47,9 +48,37 @@ const user = page.props.auth.user;
 
                 <Form
                     v-bind="ProfileController.update.form()"
+                    enctype="multipart/form-data"
                     class="space-y-6"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
+                    <div class="grid gap-2">
+                        <Label for="avatar">Profile photo</Label>
+                        <div class="flex items-center gap-4">
+                            <img
+                                v-if="user.avatar"
+                                :src="String(user.avatar)"
+                                :alt="`${user.name} avatar`"
+                                class="h-16 w-16 rounded-full border border-border object-cover"
+                            />
+                            <div
+                                v-else
+                                class="flex h-16 w-16 items-center justify-center rounded-full border border-dashed border-border bg-muted text-lg font-semibold text-muted-foreground"
+                            >
+                                {{ user.name.charAt(0).toUpperCase() }}
+                            </div>
+                            <Input
+                                id="avatar"
+                                type="file"
+                                name="avatar"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                                class="max-w-sm"
+                            />
+                        </div>
+                        <p class="text-xs text-muted-foreground">Accepted: JPG, PNG, WEBP up to 2MB.</p>
+                        <InputError class="mt-2" :message="errors.avatar" />
+                    </div>
+
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
                         <Input
@@ -77,6 +106,22 @@ const user = page.props.auth.user;
                             placeholder="Email address"
                         />
                         <InputError class="mt-2" :message="errors.email" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="student_id_no">Student ID Number</Label>
+                        <Input
+                            id="student_id_no"
+                            type="text"
+                            class="mt-1 block w-full"
+                            name="student_id_no"
+                            :default-value="user.student_id_no"
+                            readonly
+                            autocomplete="off"
+                            placeholder="Auto-generated after registration"
+                        />
+                        <p class="text-xs text-muted-foreground">Assigned automatically at registration and cannot be changed.</p>
+                        <InputError class="mt-2" :message="errors.student_id_no" />
                     </div>
 
                     <div v-if="mustVerifyEmail && !user.email_verified_at">

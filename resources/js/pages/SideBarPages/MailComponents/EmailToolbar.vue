@@ -1,30 +1,37 @@
 <script setup lang="ts">
-import { Square, RefreshCcw, MoreVertical, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { Filter, RefreshCcw, SlidersHorizontal } from 'lucide-vue-next';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+
+defineProps<{
+    currentFolder: string;
+    visibleCount: number;
+    totalCount: number;
+}>();
 </script>
 
 <template>
-    <div class="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-white">
-        <div class="flex items-center gap-4">
-            <button class="p-2 hover:bg-gray-100 rounded-md">
-                <Square class="w-4 h-4 text-gray-400" />
-            </button>
-            <button class="p-2 hover:bg-gray-100 rounded-md">
-                <RefreshCcw class="w-4 h-4 text-gray-400" />
-            </button>
-            <button class="p-2 hover:bg-gray-100 rounded-md">
-                <MoreVertical class="w-4 h-4 text-gray-400" />
-            </button>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-sm">
+        <div class="flex items-center gap-2">
+            <Badge variant="outline" class="rounded-full px-3 py-1 text-[11px]">
+                {{ currentFolder }}
+            </Badge>
+            <p class="text-xs text-muted-foreground">
+                Showing <span class="font-semibold text-foreground">{{ visibleCount }}</span>
+                of {{ totalCount }}
+            </p>
         </div>
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-            <span>1-50 of 1,240</span>
-            <div class="flex gap-1">
-                <button class="p-1 hover:bg-gray-100 rounded">
-                    <ChevronLeft class="w-4 h-4" />
-                </button>
-                <button class="p-1 hover:bg-gray-100 rounded">
-                    <ChevronRight class="w-4 h-4" />
-                </button>
-            </div>
+
+        <div class="flex items-center gap-1">
+            <Button variant="ghost" size="icon-sm" title="Refresh">
+                <RefreshCcw class="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon-sm" title="Sort">
+                <SlidersHorizontal class="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon-sm" title="Filter">
+                <Filter class="h-4 w-4 text-muted-foreground" />
+            </Button>
         </div>
     </div>
 </template>

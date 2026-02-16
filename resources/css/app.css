@@ -90,76 +90,84 @@
 }
 
 :root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 3.9%);
+    --background: hsl(210 40% 98%);
+    --foreground: hsl(222 47% 11%);
     --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 3.9%);
+    --card-foreground: hsl(222 47% 11%);
     --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 3.9%);
-    --primary: hsl(0 0% 9%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(0 0% 92.1%);
-    --secondary-foreground: hsl(0 0% 9%);
-    --muted: hsl(0 0% 96.1%);
-    --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(0 0% 96.1%);
-    --accent-foreground: hsl(0 0% 9%);
+    --popover-foreground: hsl(222 47% 11%);
+    --primary: hsl(221 83% 53%);
+    --primary-foreground: hsl(210 40% 98%);
+    --secondary: hsl(214 32% 91%);
+    --secondary-foreground: hsl(222 47% 16%);
+    --muted: hsl(214 32% 94%);
+    --muted-foreground: hsl(217 19% 35%);
+    --accent: hsl(214 32% 92%);
+    --accent-foreground: hsl(222 47% 16%);
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 92.8%);
-    --input: hsl(0 0% 89.8%);
-    --ring: hsl(0 0% 3.9%);
-    --chart-1: hsl(12 76% 61%);
-    --chart-2: hsl(173 58% 39%);
-    --chart-3: hsl(197 37% 24%);
-    --chart-4: hsl(43 74% 66%);
-    --chart-5: hsl(27 87% 67%);
+    --border: hsl(214 32% 86%);
+    --input: hsl(214 32% 86%);
+    --ring: hsl(221 83% 53%);
+    --chart-1: hsl(221 83% 53%);
+    --chart-2: hsl(199 89% 48%);
+    --chart-3: hsl(245 83% 67%);
+    --chart-4: hsl(173 58% 39%);
+    --chart-5: hsl(25 95% 53%);
     --radius: 0.5rem;
-    --sidebar-background: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(0 0% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(0 0% 94%);
-    --sidebar-accent-foreground: hsl(0 0% 30%);
-    --sidebar-border: hsl(0 0% 91%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(0 0% 98%);
+    --sidebar-background: hsl(214 38% 97%);
+    --sidebar-foreground: hsl(222 47% 16%);
+    --sidebar-primary: hsl(221 83% 53%);
+    --sidebar-primary-foreground: hsl(210 40% 98%);
+    --sidebar-accent: hsl(214 32% 92%);
+    --sidebar-accent-foreground: hsl(222 47% 16%);
+    --sidebar-border: hsl(214 32% 86%);
+    --sidebar-ring: hsl(221 83% 53%);
+    --sidebar: hsl(214 38% 97%);
+    --app-bg-gradient:
+        radial-gradient(1200px 600px at 90% -10%, hsl(218 100% 88% / 0.35), transparent 60%),
+        radial-gradient(900px 500px at -10% 0%, hsl(198 100% 88% / 0.28), transparent 50%);
+    --app-card-shadow: 0 10px 30px -14px hsl(220 40% 20% / 0.18);
 }
 
 .dark {
-    --background: hsl(0 0% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
-    --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
-    --popover-foreground: hsl(0 0% 98%);
-    --primary: hsl(0 0% 98%);
-    --primary-foreground: hsl(0 0% 9%);
-    --secondary: hsl(0 0% 14.9%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(0 0% 16.08%);
-    --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(0 0% 14.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 84% 60%);
+    --background: hsl(222 47% 11%);
+    --foreground: hsl(210 33% 96%);
+    --card: hsl(221 39% 14%);
+    --card-foreground: hsl(210 33% 96%);
+    --popover: hsl(221 39% 14%);
+    --popover-foreground: hsl(210 33% 96%);
+    --primary: hsl(212 95% 68%);
+    --primary-foreground: hsl(222 47% 11%);
+    --secondary: hsl(220 28% 19%);
+    --secondary-foreground: hsl(210 33% 96%);
+    --muted: hsl(220 24% 18%);
+    --muted-foreground: hsl(216 16% 72%);
+    --accent: hsl(218 34% 22%);
+    --accent-foreground: hsl(210 33% 96%);
+    --destructive: hsl(0 75% 58%);
     --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 14.9%);
-    --input: hsl(0 0% 14.9%);
-    --ring: hsl(0 0% 83.1%);
-    --chart-1: hsl(220 70% 50%);
-    --chart-2: hsl(160 60% 45%);
-    --chart-3: hsl(30 80% 55%);
-    --chart-4: hsl(280 65% 60%);
-    --chart-5: hsl(340 75% 55%);
-    --sidebar-background: hsl(0 0% 7%);
-    --sidebar-foreground: hsl(0 0% 95.9%);
-    --sidebar-primary: hsl(360, 100%, 100%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(0 0% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(0 0% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(240 5.9% 10%);
+    --border: hsl(220 24% 24%);
+    --input: hsl(220 24% 24%);
+    --ring: hsl(212 95% 68%);
+    --chart-1: hsl(214 92% 67%);
+    --chart-2: hsl(199 89% 58%);
+    --chart-3: hsl(227 81% 70%);
+    --chart-4: hsl(187 85% 54%);
+    --chart-5: hsl(242 83% 74%);
+    --sidebar-background: hsl(223 46% 12%);
+    --sidebar-foreground: hsl(210 33% 96%);
+    --sidebar-primary: hsl(212 95% 68%);
+    --sidebar-primary-foreground: hsl(222 47% 11%);
+    --sidebar-accent: hsl(220 30% 18%);
+    --sidebar-accent-foreground: hsl(210 33% 96%);
+    --sidebar-border: hsl(220 24% 24%);
+    --sidebar-ring: hsl(212 95% 68%);
+    --sidebar: hsl(223 46% 12%);
+    --app-bg-gradient:
+        radial-gradient(1100px 560px at 90% -10%, hsl(211 90% 65% / 0.16), transparent 58%),
+        radial-gradient(900px 480px at -10% 0%, hsl(231 90% 70% / 0.12), transparent 52%);
+    --app-card-shadow: 0 12px 32px -14px hsl(220 70% 4% / 0.58);
 }
 
 @layer base {
@@ -168,5 +176,129 @@
     }
     body {
         @apply bg-background text-foreground;
+        background-image: var(--app-bg-gradient);
+        background-attachment: fixed;
+        transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    button,
+    input,
+    textarea,
+    select,
+    [data-slot='card'],
+    [data-slot='button'],
+    [data-sidebar='menu-button'] {
+        transition:
+            background-color 180ms ease,
+            border-color 180ms ease,
+            color 180ms ease,
+            box-shadow 220ms ease,
+            transform 180ms ease;
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in hsl, var(--primary) 40%, transparent) transparent;
+    }
+
+    *::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: color-mix(in hsl, var(--primary) 42%, transparent);
+        border-radius: 999px;
+        border: 2px solid transparent;
+        background-clip: content-box;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: color-mix(in hsl, var(--primary) 62%, transparent);
+        background-clip: content-box;
+    }
+}
+
+@layer utilities {
+    .animate-fade-in-up {
+        animation: fade-in-up 360ms ease-out both;
+    }
+
+    .animate-fade-in-down {
+        animation: fade-in-down 320ms ease-out both;
+    }
+
+    .animate-soft-pop {
+        animation: soft-pop 220ms ease-out both;
+    }
+
+    .surface-panel {
+        @apply rounded-xl border border-border bg-card;
+        box-shadow: var(--app-card-shadow);
+    }
+
+    .stagger-children > * {
+        animation: fade-in-up 320ms ease-out both;
+    }
+
+    .stagger-children > *:nth-child(2) {
+        animation-delay: 50ms;
+    }
+
+    .stagger-children > *:nth-child(3) {
+        animation-delay: 100ms;
+    }
+
+    .stagger-children > *:nth-child(4) {
+        animation-delay: 150ms;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes soft-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up,
+    .animate-fade-in-down,
+    .animate-soft-pop,
+    .stagger-children > * {
+        animation: none !important;
     }
 }

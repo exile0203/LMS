@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
+import { BookOpen, Users } from 'lucide-vue-next';
 import { ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -10,7 +11,6 @@ import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
-import { BookOpen, Users } from 'lucide-vue-next';
 
 const selectedRole = ref('student');
 </script>
@@ -122,6 +122,40 @@ const selectedRole = ref('student');
                         </label>
                     </div>
                     <InputError :message="errors.role" />
+                </div>
+
+                <div v-if="selectedRole === 'student'" class="grid gap-4">
+                    <div class="grid gap-2">
+                        <Label for="section">Section</Label>
+                        <select
+                            id="section"
+                            name="section"
+                            required
+                            class="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                        >
+                            <option value="">Select section</option>
+                            <option value="Section 1">Section 1</option>
+                            <option value="Section 2">Section 2</option>
+                            <option value="Section 3">Section 3</option>
+                        </select>
+                        <InputError :message="errors.section" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="course">Course</Label>
+                        <select
+                            id="course"
+                            name="course"
+                            required
+                            class="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                        >
+                            <option value="">Select course</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Science">Science</option>
+                            <option value="English">English</option>
+                        </select>
+                        <InputError :message="errors.course" />
+                    </div>
                 </div>
 
                 <Button
